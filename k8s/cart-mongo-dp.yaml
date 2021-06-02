@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-mongo
+  labels:
+    app: cart-mongo
+  namespace: micro
+spec:
+  selector:
+    matchLabels:
+      app: cart-mongo
+      tier: cart-mongo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cart-mongo
+        tier: cart-mongo
+    spec:
+      containers:
+      - image: mongo
+        name: cart-mongo
+        ports:
+        - containerPort: 27017
+          name: cart-mongo
+        volumeMounts:
+        - name: cart-persistent-storage
+          mountPath: /var/lib/cart
+      volumes:
+      - name: cart-persistent-storage
+        persistentVolumeClaim:
+          claimName: cart
